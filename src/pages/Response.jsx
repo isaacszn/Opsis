@@ -24,7 +24,7 @@ const Response = () => {
         <>
             <div>
                 <h1 className="serif text-center mx-auto font-bold text-3xl pt-5">Response</h1>
-                <img src={image} alt="Photo" className="w-[300px] h-[300px] lg:w-[500px] rounded-md m-8 text-center mx-auto" />
+                <img src={image} alt="Photo" className="w-[300px] h-[300px] lg:w-[350px] lg:h-[350px] rounded-md m-8 text-center mx-auto" />
                 <p className="poppins text-gray-800 leading-relaxed text-center mx-auto">Analyzing image...</p>
                 <Link to="/" className=" poppins underline text-blue-800 hover:text-blue-700 font-medium">
                     <p className="text-center mx-auto">Capture another object/matter</p>
