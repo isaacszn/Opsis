@@ -2,15 +2,20 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Response from './pages/Response'
 import Layout from './components/Layout'
+import NotFound from './pages/NotFound'
 
 const App = () => {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/response" element={<Response />} />
-      </Routes>
-    </Layout>
+    <>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="/response" element={<Response />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+    </>
   )
 }
 

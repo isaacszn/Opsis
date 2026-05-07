@@ -24,3 +24,7 @@
     font-family: serif;
     font-style: italic;
 }
+
+.monospace {
+    font-family: monospace;
+}
