@@ -6,7 +6,7 @@ const Navbar = () => {
         <>
             <div className="flex justify-between items-center px-5 py-3 fixed top-0 left-0 w-full h-[80px] border-b border-gray-200/50 z-10 bg-white/5 backdrop-blur-sm">
                 <h1 className='caveat text-2xl font-bold tracking-tight text-blue-800'>
-                    <a href="https://whatisthis.pxxl.app" className="flex items-center gap-3 underline">
+                    <a href="https://whatisthis.pxxl.click" className="flex items-center gap-3 underline">
                         WhatIsThis
                     </a>
                 </h1>
