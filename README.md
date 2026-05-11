@@ -1,10 +1,10 @@
-# WhatIsThis
+# Opsis
 
 This project gives you a super quick way to learn about things around you. Just snap a photo of an object, it'll analyze it and tell you what it is. It's designed to be simple and direct, getting you information without any fuss.
 
 ## Usage
 
-Using WhatIsThis is straightforward.
+Using Opsis is straightforward.
 
 1.  **Navigate to the Home Page**: When you first open the application, you'll land on the home page with a welcoming message.
 2.  **Take a Photo**: Look for the camera button located at the bottom right of the screen. Click on it.
@@ -14,7 +14,7 @@ Using WhatIsThis is straightforward.
 
 ## Features
 
-Here's what WhatIsThis can do:
+Here's what Opsis can do:
 
 *   **Direct Image Capture**: Easily capture photos using your device's camera right from the app.
 *   **Real-time Photo Processing**: Your captured images are immediately processed and sent for analysis.
