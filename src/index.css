@@ -12,6 +12,11 @@
     src: url("/src/assets/fonts/Poppins-Regular.ttf");
 }
 
+@font-face {
+    font-family: Jetbrains Mono;
+    src: url("/src/assets/fonts/JetBrainsMono-Regular.ttf")
+}
+
 .caveat {
     font-family: Caveat, sans-serif;
 }
@@ -26,5 +31,5 @@
 }
 
 .monospace {
-    font-family: monospace;
+    font-family: JetBrains Mono;
 }
