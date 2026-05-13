@@ -27,7 +27,7 @@ const CameraButton = () => {
     return (
         <>
             <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={handleImage} className="hidden" />
-            <button className="poppins bg-blue-700 text-white w-[70px] h-[70px] rounded-full text-[15px] shadow-lg hover:bg-blue-600 focus:text-black-600 active:text-black-600 cursor-pointer fixed bottom-[100px] right-[30px] flex items-center justify-center" onClick={openCamera}>
+            <button className="poppins bg-blue-700 text-white w-[70px] h-[70px] rounded-full text-[15px] shadow-lg hover:bg-blue-600 focus:text-black-600 active:text-black-600 cursor-pointer fixed bottom-[100px] right-[30px] flex items-center justify-center shadow-lg shadow-blue-500/70 hover:shadow-xl" onClick={openCamera}>
                 <Camera />
             </button>
         </>

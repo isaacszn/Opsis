@@ -11,9 +11,9 @@ const Response = () => {
     if (!image) {
         return (
             <div className="poppins pt-20">
-                <h1 className="serif text-center mx-auto font-bold text-3xl">No Image Found</h1>
-                <p className="text-gray-700 mx-auto p-4 text-center">Looks like you haven't captured anything yet :(</p>
-                <Link to="/" className="underline text-blue-800 hover:text-blue-700 font-medium">
+                <h1 className="serif text-center mx-auto font-bold text-6xl">No Image Found</h1>
+                <p className="text-gray-700 mx-auto p-6 text-center text-lg">Looks like you haven't captured anything yet :(</p>
+                <Link to="/" className="underline text-blue-800 hover:text-blue-700 font-medium text-lg p-4">
                     <p className="text-center mx-auto">&larr; Go back home to take a photo</p>
                 </Link>
             </div>
