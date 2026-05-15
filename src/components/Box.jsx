@@ -5,7 +5,7 @@ const Box = (props) => {
                 {props.number}
             </div>
             <div className="p-6">
-                <h1 className="serif font-bold text-black text-xl mb-5">{props.header}</h1>
+                <h1 className="serif font-bold text-black text-2xl mb-5">{props.header}</h1>
                 <p>{props.text}</p>
             </div>
         </div>
