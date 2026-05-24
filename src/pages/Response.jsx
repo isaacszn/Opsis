@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useEffect, useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Camera } from 'lucide-react'
 
@@ -7,7 +8,7 @@ const Response = () => {
     const location = useLocation()
     // Grab the image from state
     const image = location.state?.image
-    console.log(image)
+    // console.log(image)
 
     if (!image) {
         return (
@@ -20,6 +21,22 @@ const Response = () => {
             </div>
         )
     }
+
+    // Call API when page loads
+    useEffect(() => {
+        const callAPI = async () => {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/analyze");
+                const data = await response.json();
+                console.log(data)
+            }
+            catch (error) {
+                console.log(error.message)
+            }
+        };
+
+        callAPI();
+    }, [])
 
     return (
         <>
