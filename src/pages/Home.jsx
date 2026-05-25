@@ -3,7 +3,7 @@ import CameraButton from '../components/CameraButton'
 
 const Home = () => {
   return (
-    <div>
+    <div className="mb-20">
       <Intro />
       <CameraButton />
     </div>
