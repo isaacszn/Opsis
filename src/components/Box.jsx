@@ -5,7 +5,8 @@ const Box = (props) => {
                 {props.number}
             </div>
             <div className="p-6">
-                <h1 className="serif font-bold text-black text-2xl mb-5">{props.header}</h1>
+                <span className="text-6xl">{props.emoji}</span>
+                <h1 className="serif font-bold text-black text-2xl mt-5 mb-5">{props.header}</h1>
                 <p>{props.text}</p>
             </div>
         </div>
