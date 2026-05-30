@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { useEffect, useState } from 'react'
-import { useLocation, Link } from 'react-router-dom'
+import { useEffect, useState, useRef } from 'react'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Camera, Copy } from 'lucide-react'
 
 const Response = () => {
@@ -15,6 +15,7 @@ const Response = () => {
     const [description, setDescription] = useState('');
     const [error, setError] = useState(null);
     const [copied, setCopied] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     if (!imageDataURL) {
         return (
@@ -28,10 +29,26 @@ const Response = () => {
         )
     }
 
-    if (description) {
-        console.log("Description available.");
-    } else {
-        console.log("No description found.")
+    const fileInputRef = useRef(null)
+    const navigate = useNavigate()
+
+    const handleImage = (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+
+        // Convert image to base64
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = (event) => {
+            const imageDataURL = event.target.result;
+            setRefreshKey(k => k + 1)
+            // Send to "/response" route
+            navigate('/response', { state: { imageFile: file, imageDataURL: imageDataURL } })
+        }
+    }
+
+    const openCamera = () => {
+        fileInputRef.current.click()
     }
 
     // Call API when page loads
@@ -39,12 +56,15 @@ const Response = () => {
         const callAPI = async () => {
             try {
                 setLoading(true);
+                setError(null);
+                setCopied(false);
+                setDescription('');
                 const formData = new FormData();
                 formData.append('file', imageFile)
 
                 const apiURL = "https://opsis-api.up.railway.app/analyze";
 
-                const response = await fetch(apiURL, {
+                const response = await fetch('http://localhost:8000/analyze', {
                     method: 'POST',
                     body: formData
                 });
@@ -71,7 +91,7 @@ const Response = () => {
         };
 
         callAPI();
-    }, []);
+    }, [refreshKey]);
 
     const handleCopy = () => {
         if (description) {
@@ -86,10 +106,11 @@ const Response = () => {
     return (
         <>
             <div>
+                <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={handleImage} className="hidden" />
                 <div className="lg:w-[60%] lg:mx-auto lg:border lg:border-gray-300 lg:rounded-md lg:mt-10 mb-10 lg:shadow-sm lg:shadow-black-500/80">
                     <div className="flex flex-col justify-center items-end me-5">
-                        <div className="bg-blue-800 w-[220px] h-[220px] lg:w-[230px] lg:h-[230px] rounded-tr-sm rounded-tl-3xl rounded-bl-3xl rounded-br-3xl flex flex-col justify-center items-start my-15">
-                            <img src={imageDataURL} alt="Photo" className="w-[200px] h-[200px] lg:w-[210px] lg:h-[210px] rounded-3xl m-2 text-center mx-auto" />
+                        <div className="bg-blue-800 w-[240px] h-[240px] lg:w-[230px] lg:h-[230px] rounded-tr-sm rounded-tl-3xl rounded-bl-3xl rounded-br-3xl flex flex-col justify-center items-start my-15">
+                            <img src={imageDataURL} alt="Photo" className="w-[220px] h-[220px] lg:w-[210px] lg:h-[210px] rounded-3xl m-2 text-center mx-auto" />
                         </div>
                     </div>
 
@@ -99,16 +120,16 @@ const Response = () => {
                             { error && <p className="serif text-red-700 leading-relaxed text-center mx-auto italic">{ error }</p> }
                             { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ description }</p> }
                         </div>
-                        { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy}>
+                        { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 focus:scale-110 active:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy}>
                             <Copy className="text-black" />
                             { copied ? 'Copied!' : 'Copy' }
                         </div>) }
                     </div>
                 </div>
 
-                <Link to="/" className=" poppins underline text-blue-800 hover:text-blue-700 font-bold text-md">
-                    <p className="text-center mx-auto flex justify-center gap-1">Capture another thing <Camera /></p>
-                </Link>
+                <p className="poppins underline text-blue-800 hover:text-blue-700 font-bold text-md text-center mx-auto flex justify-center gap-1 cursor-pointer" onClick={openCamera}>
+                    Capture another thing <Camera />
+                </p>
             </div>
         </>
     )
