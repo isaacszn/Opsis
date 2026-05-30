@@ -64,7 +64,7 @@ const Response = () => {
 
                 const apiURL = "https://opsis-api.up.railway.app/analyze";
 
-                const response = await fetch('http://localhost:8000/analyze', {
+                const response = await fetch(apiURL, {
                     method: 'POST',
                     body: formData
                 });
