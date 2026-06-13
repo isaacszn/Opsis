@@ -16,6 +16,9 @@ const Response = () => {
     const [error, setError] = useState(null);
     const [copied, setCopied] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [displayText, setDisplayText] = useState("");
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [speakingEnabled, setEnableSpeaking] = useState(false);
 
     if (!imageDataURL) {
         return (
@@ -93,6 +96,18 @@ const Response = () => {
         callAPI();
     }, [refreshKey]);
 
+    // Hook for typing effect on description gotten
+    // from back-end
+    useEffect(() => {
+        let i = 0;
+        const interval = setInterval(() => {
+           setDisplayText(description.slice(0, i));
+           i++;
+           if (i > description.length) clearInterval(interval);
+        }, 30);
+    }, [description]);
+
+    // Copy functionality
     const handleCopy = () => {
         if (description) {
             navigator.clipboard.writeText(description);
@@ -102,6 +117,38 @@ const Response = () => {
             }, 1000 * 3);
         }
     }
+
+    const text = "This appears to be a silhouette of a person, likely male, standing against a bright, plain white background. The entire figure is completely black because the light source is behind them, making it impossible to see any facial features or details of their clothing, only the outline. You can clearly see the shape of their head with short hair, and they appear to be wearing a high-necked top, perhaps a turtleneck. The overall effect is very anonymous and a bit mysterious, focusing solely on the form rather than identity.";
+
+    // Speech functionality
+    const speak = (text) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.4;
+      utterance.volume = 1;
+      // Get all available voices
+      const voices = window.speechSynthesis.getVoices();
+      // Pick female voices
+      const femaleVoice = voices.find(voice => {
+          voice.name.toLowerCase().includes("female") || voice.name.includes("Samantha")  || voice.name.includes("Google UK English Female") || voice.name.includes("Zira") || voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("susan") || voice.name.toLowerCase().includes("karen") || voice.gender === "female"
+      });
+      console.log(voices);
+      console.log(femaleVoice)
+
+      utterance.voice = femaleVoice || voices.find(v => v.lang.startsWith("en")) || voices[0];
+      console.log("Using voice:", utterance.voice?.name);
+
+      utterance.onend = () => setIsSpeaking(false);
+      setIsSpeaking(true);
+      speechSynthesis.speak(utterance);
+    };
+
+    useEffect(() => {
+        speechSynthesis.getVoices();
+        speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    }, []);
+
+    // speak(text);
 
     return (
         <>
@@ -118,7 +165,7 @@ const Response = () => {
                         <div className="border border-gray-300 p-5 w-[85%] lg:w-[65%] backdrop-blur-lg rounded-4xl shadow-sm shadow-gray-800/50 hover:shadow-md focus:shadow-md active:shadow-md transition-shadow rounded-tl-sm rounded-tr-3xl rounded-bl-3xl rounded-br-3xl mb-3">
                             { loading && <p className="serif text-gray-800 leading-relaxed text-center mx-auto">Opsis analyzing image...</p> }
                             { error && <p className="serif text-red-700 leading-relaxed text-center mx-auto italic">{ error }</p> }
-                            { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ description }</p> }
+                            { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ displayText }</p> }
                         </div>
                         { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 focus:scale-110 active:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy}>
                             <Copy className="text-black" />
@@ -127,8 +174,10 @@ const Response = () => {
                     </div>
                 </div>
 
-                <p className="poppins underline text-blue-800 hover:text-blue-700 font-bold text-md text-center mx-auto flex justify-center gap-1 cursor-pointer" onClick={openCamera}>
-                    Capture another thing <Camera />
+                <p className="poppins underline text-blue-800 hover:text-blue-700 font-bold text-md text-center mx-auto flex justify-center gap-1 cursor-pointer fixed bottom-15 left-0 w-full" onClick={openCamera}>
+                    <span className="flex gap-1 p-[6px] rounded-full border-black-500/50 z-10 bg-white/5 backdrop-blur-sm">
+                        Capture another thing <Camera />
+                    </span>
                 </p>
             </div>
         </>
