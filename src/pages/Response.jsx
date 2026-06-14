@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useEffect, useState, useRef } from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
-import { Camera, Copy } from 'lucide-react'
+import { Camera, Copy, Volume2 } from 'lucide-react'
 
 const Response = () => {
     const location = useLocation()
@@ -18,7 +18,6 @@ const Response = () => {
     const [refreshKey, setRefreshKey] = useState(0);
     const [displayText, setDisplayText] = useState("");
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [speakingEnabled, setEnableSpeaking] = useState(false);
 
     if (!imageDataURL) {
         return (
@@ -118,29 +117,39 @@ const Response = () => {
         }
     }
 
-    const text = "This appears to be a silhouette of a person, likely male, standing against a bright, plain white background. The entire figure is completely black because the light source is behind them, making it impossible to see any facial features or details of their clothing, only the outline. You can clearly see the shape of their head with short hair, and they appear to be wearing a high-necked top, perhaps a turtleneck. The overall effect is very anonymous and a bit mysterious, focusing solely on the form rather than identity.";
+//     const text = "This appears to be a silhouette of a person, likely male, standing against a bright, plain white background. The entire figure is completely black because the light source is behind them, making it impossible to see any facial features or details of their clothing, only the outline. You can clearly see the shape of their head with short hair, and they appear to be wearing a high-necked top, perhaps a turtleneck. The overall effect is very anonymous and a bit mysterious, focusing solely on the form rather than identity.";
 
     // Speech functionality
-    const speak = (text) => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95;
-      utterance.pitch = 1.4;
-      utterance.volume = 1;
-      // Get all available voices
-      const voices = window.speechSynthesis.getVoices();
-      // Pick female voices
-      const femaleVoice = voices.find(voice => {
-          voice.name.toLowerCase().includes("female") || voice.name.includes("Samantha")  || voice.name.includes("Google UK English Female") || voice.name.includes("Zira") || voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("susan") || voice.name.toLowerCase().includes("karen") || voice.gender === "female"
-      });
-      console.log(voices);
-      console.log(femaleVoice)
+    const toggleSpeak = () => {
+      if (!description) return;
 
-      utterance.voice = femaleVoice || voices.find(v => v.lang.startsWith("en")) || voices[0];
-      console.log("Using voice:", utterance.voice?.name);
+      if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          setIsSpeaking(false);
+      } else {
+            const utterance = new SpeechSynthesisUtterance(description);
+            utterance.rate = 0.95;
+            utterance.pitch = 1.4;
+            utterance.volume = 1;
+            // Get all available voices
+            const voices = window.speechSynthesis.getVoices();
+            // Pick female voices
+            const femaleVoice = voices.find(voice => {
+                voice.name.toLowerCase().includes("female") || voice.name.includes("Samantha")  || voice.name.includes("Google UK English Female") || voice.name.includes("Zira") || voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("susan") || voice.name.toLowerCase().includes("karen") || voice.gender === "female"
+            });
+            console.log(voices);
+            console.log(femaleVoice)
 
-      utterance.onend = () => setIsSpeaking(false);
-      setIsSpeaking(true);
-      speechSynthesis.speak(utterance);
+            utterance.voice = femaleVoice || voices.find(v => v.lang.startsWith("en")) || voices[0];
+            console.log("Using voice:", utterance.voice?.name);
+
+            utterance.onend = () => setIsSpeaking(false);
+            utterance.onerror = () => setIsSpeaking(false);
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+            setIsSpeaking(true);
+      }
     };
 
     useEffect(() => {
@@ -167,10 +176,13 @@ const Response = () => {
                             { error && <p className="serif text-red-700 leading-relaxed text-center mx-auto italic">{ error }</p> }
                             { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ displayText }</p> }
                         </div>
-                        { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 focus:scale-110 active:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy}>
-                            <Copy className="text-black" />
-                            { copied ? 'Copied!' : 'Copy' }
-                        </div>) }
+                        <div className="flex gap-5">
+                            { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 focus:scale-110 active:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy} title="Copy description">
+                                <Copy className="text-black" />
+                                { copied ? 'Copied!' : 'Copy' }
+                            </div>) }
+                            { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={toggleSpeak} title={ isSpeaking ? 'Stop speaking' : 'Start speaking' }><Volume2 className="text-black" /> { isSpeaking ? 'Speaking...' : 'Speak' }</div>) }
+                        </div>
                     </div>
                 </div>
 
