@@ -55,6 +55,8 @@ const Response = () => {
 
     // Call API when page loads
     useEffect(() => {
+//         const controller = new AbortController();
+
         const callAPI = async () => {
             try {
                 setLoading(true);
@@ -62,13 +64,14 @@ const Response = () => {
                 setCopied(false);
                 setDescription('');
                 const formData = new FormData();
-                formData.append('file', imageFile)
+                formData.append('file', imageFile);
 
                 const apiURL = "https://opsis-api.up.railway.app/analyze";
 
                 const response = await fetch(apiURL, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    // signal: controller.signal
                 });
                 const data = await response.json();
                 console.log(data);
@@ -80,9 +83,11 @@ const Response = () => {
                 }
             }
             catch (error) {
+                // if (error.name === "AbortError") return;
                 console.log("Error: ", error.message);
                 if (error.message == "NetworkError when attempting to fetch resource.") {
                     setError("Analysis failed. Please check your internet connection!");
+                    setDescription("Yo.")
                 } else {
                     setError(error.message);
                 }
@@ -93,7 +98,9 @@ const Response = () => {
         };
 
         callAPI();
-    }, [refreshKey]);
+
+        // return () => controller.abort();
+    }, [imageFile, refreshKey]);
 
     // Hook for typing effect on description gotten
     // from back-end
@@ -128,7 +135,7 @@ const Response = () => {
           setIsSpeaking(false);
       } else {
             const utterance = new SpeechSynthesisUtterance(description);
-            utterance.rate = 0.95;
+            utterance.rate = 0.80;
             utterance.pitch = 1.4;
             utterance.volume = 1;
             // Get all available voices
@@ -171,17 +178,17 @@ const Response = () => {
                     </div>
 
                     <div className="flex flex-col justify-center items-start ms-5">
-                        <div className="border border-gray-300 p-5 w-[85%] lg:w-[65%] backdrop-blur-lg rounded-4xl shadow-sm shadow-gray-800/50 hover:shadow-md focus:shadow-md active:shadow-md transition-shadow rounded-tl-sm rounded-tr-3xl rounded-bl-3xl rounded-br-3xl mb-3">
-                            { loading && <p className="serif text-gray-800 leading-relaxed text-center mx-auto">Opsis analyzing image...</p> }
-                            { error && <p className="serif text-red-700 leading-relaxed text-center mx-auto italic">{ error }</p> }
-                            { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ displayText }</p> }
-                        </div>
-                        <div className="flex gap-5">
+                        <div className="flex gap-5 mb-3">
                             { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 focus:scale-110 active:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={handleCopy} title="Copy description">
                                 <Copy className="text-black" />
                                 { copied ? 'Copied!' : 'Copy' }
                             </div>) }
-                            { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={toggleSpeak} title={ isSpeaking ? 'Stop speaking' : 'Start speaking' }><Volume2 className="text-black" /> { isSpeaking ? 'Speaking...' : 'Speak' }</div>) }
+                            { !loading && description && (<div className="flex items-center justify-center gap-1 pointer hover:scale-110 hover:text-gray-800 transition text-sm poppins text-gray-800 cursor-pointer" onClick={toggleSpeak} title={ isSpeaking ? 'Stop speaking' : 'Start speaking' }><Volume2 className="text-black" fill={ isSpeaking ? "currentColor" : "none" } /> { isSpeaking ? 'Speaking...' : 'Speak' }</div>) }
+                        </div>
+                        <div className="border border-gray-300 p-5 w-[85%] lg:w-[65%] backdrop-blur-lg rounded-4xl shadow-sm shadow-gray-800/50 hover:shadow-md focus:shadow-md active:shadow-md transition-shadow rounded-tl-sm rounded-tr-3xl rounded-bl-3xl rounded-br-3xl">
+                            { loading && <p className="serif text-gray-800 leading-relaxed text-center mx-auto">Opsis analyzing image...</p> }
+                            { error && <p className="serif text-red-700 leading-relaxed text-center mx-auto italic">{ error }</p> }
+                            { !error && !loading && <p className="poppins font-bold text-gray-900 leading-relaxed text-center mx-auto">{ displayText }</p> }
                         </div>
                     </div>
                 </div>
